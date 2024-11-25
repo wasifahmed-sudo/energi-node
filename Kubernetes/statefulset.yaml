@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: energi
-        image: ${{ vars.AWS_REGISTRY_URL }}//energi:latest
+        image: 123456780.dkr.ecr.us-east-1.amazonaws.com/energi:latest
         imagePullPolicy: Never
         resources:
           limits:

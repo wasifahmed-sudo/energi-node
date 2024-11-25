@@ -12,10 +12,13 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 script {
-                    env.Env = "dev"
-                    sh 'rm -rf $WORKSPACE/Env'
+                    env.Env = "dev" // Define the environment variable 'Env' with the value 'dev'
+                    sh 'rm -rf $WORKSPACE/Env' // Remove the directory '$WORKSPACE/Env' if it exists. This is a cleanup step to ensure a fresh start for the build.
+    
+    // Change the working directory to the value of the 'Env' environment variable
+    // This allows the build steps to be executed in the context of the specified environment
                     dir(Env) {
-                        git branch: 'main', credentialsId: 'github', url: 'git@github.com:.git'
+                        git branch: 'main', credentialsId: 'github', url: 'git@github.com:wasifahmed-sudo/energi-node.git'
                     }
                 }
             }
