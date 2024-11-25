@@ -8,17 +8,19 @@ Alice Johnson: ALICE.JOHNSON@example.com
 
 Bob Brown: bob.brown@example.com
 ```
-## Extracting email addresses using awk command
+## Extracting and converting emails to lowercase from then alphabetically sorting them
+
+
+
+
+![awk](https://github.com/user-attachments/assets/cd03772e-0d7c-437a-ac35-3f646e654be0)
 
 
 
 
 
-
-![awk](https://github.com/user-attachments/assets/7bb38573-294d-4cbf-96f2-c13a2178a8bc)
-
-
-## Extracting names using grep command
+## Extracting names and alphabetically sorting them, ignoring case.
 
 
-![grep](https://github.com/user-attachments/assets/39835422-517d-4448-801c-3325fe02fa1b)
+![grep](https://github.com/user-attachments/assets/cc7c6abd-6a0c-42fe-8ed8-6478e4ef3ff5)
+
