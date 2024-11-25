@@ -23,6 +23,7 @@ RUN wget https://s3-us-west-2.amazonaws.com/download.energi.software/releases/en
 # Verify the checksum of the Energi Node
 # The checksum is extracted from the SHA256SUMS file and verified using sha256sum
 # If the checksum verification fails, the build process will stop with an error
+##Reference for this checksum verification method was sourced from ChatGPT
 RUN grep "energi3-v${ENERGI_VERSION}-linux-amd64.tgz" SHA256SUMS | sha256sum -c - \
     && tar -xzf energi3-v${ENERGI_VERSION}-linux-amd64.tgz -C /home/energi/ \
     && mv /home/energi/energi3-v${ENERGI_VERSION}-linux-amd64/bin/energi3 /home/energi/energi3 \
