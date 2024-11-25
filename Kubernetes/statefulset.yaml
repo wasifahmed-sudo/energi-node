@@ -17,6 +17,9 @@ spec:
       - name: energi
         image: 123456780.dkr.ecr.us-east-1.amazonaws.com/energi:latest
         imagePullPolicy: Never
+# The imagePullPolicy is set to "Never" to ensure the image is not pulled from the repository.
+# This is useful when the image is built locally and you want Kubernetes to always use the local image.
+# In this case, the image is stored on the laptop and is already available locally.  
         resources:
           limits:
             memory: "512Mi"
