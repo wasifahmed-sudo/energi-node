@@ -1,4 +1,4 @@
-# Problem : Extract the names and email addresses separately, and then format the email addresses to be in lowercase.
+# Problem : Extract the names and email addresses separately from a text file.
 ```
 John Doe: johndoe@example.com
 
