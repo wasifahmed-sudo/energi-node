@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: energi
+spec:
+  serviceName: "energi"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: energi
+  template:
+    metadata:
+      labels:
+        app: energi
+    spec:
+      containers:
+      - name: energi
+        image: ${{ vars.AWS_REGISTRY_URL }}//energi:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 39797
+        volumeMounts:
+        - name: energi-data
+          mountPath: /home/energi
+  volumeClaimTemplates:
+  - metadata:
+      name: energi-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

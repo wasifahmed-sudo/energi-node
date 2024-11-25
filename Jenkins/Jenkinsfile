@@ -1,0 +1,95 @@
+// Jenkins pipeline to build, push, and deploy the Energi Node Docker image
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGISTRY_URL = '123456780.dkr.ecr.us-east-1.amazonaws.com' // Replace with your ECR URL
+        IMAGE_NAME = "${AWS_REGISTRY_URL}/energi"
+    }
+
+    // Pull the latest code from the repository
+    stages {
+        stage('Git Checkout') {
+            steps {
+                script {
+                    env.Env = "dev"
+                    sh 'rm -rf $WORKSPACE/Env'
+                    dir(Env) {
+                        git branch: 'main', credentialsId: 'github', url: 'git@github.com:.git'
+                    }
+                }
+            }
+        }
+
+        // Stage to install necessary dependencies for the Jenkins agent
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Check the operating system (Jenkins agent) and install dependencies accordingly
+                    if (isUnix()) {
+                        // For Linux agents
+                        sh '''
+                            echo "Installing dependencies..."
+                            sudo apt-get update
+                            sudo apt-get install -y awscli kubectl docker.io
+                            sudo apt-get install -y curl
+                        '''
+                    } else {
+                        // For Windows agents
+                        echo 'Windows agent detected. Please ensure Docker, AWS CLI, and kubectl are installed.'
+                    }
+                }
+            }
+        }
+
+        // Build the Docker image and tag it with "latest"
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "cd $WORKSPACE/Env && docker build -t ${IMAGE_NAME}:latest ."
+                }
+            }
+        }
+
+        // Log in to AWS Elastic Container Registry
+        stage('Authenticate with AWS ECR') {
+            steps {
+                script {
+                    sh """
+                        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${AWS_REGISTRY_URL}
+                    """
+                }
+            }
+        }
+
+        // Push the Docker image to AWS ECR
+        stage('Push Docker Image to AWS ECR') {
+            steps {
+                script {
+                    sh "docker push ${IMAGE_NAME}:latest"
+                }
+            }
+        }
+
+        // Update the Kubernetes deployment with the new image
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh """
+                        kubectl set image deployment/energi-node energi-node=${IMAGE_NAME}:latest --record
+                    """
+                }
+            }
+        }
+    }
+
+    // Notify on pipeline success or failure
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
+        }
+    }
+}
